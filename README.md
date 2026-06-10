@@ -2,6 +2,25 @@
 
 A minimal (~70 lines, zero dependencies) local proxy that fixes DeepSeek V4's subagent incompatibility with Claude Code ≥ 2.1.166.
 
+## Quick Start
+
+```bash
+npx dsv4-subagent-fix
+```
+
+Then add to Claude Code `settings.json`:
+
+```json
+"ANTHROPIC_BASE_URL": "http://localhost:16890"
+```
+
+Restart Claude Code. Subagents work.
+
+**Python version:**
+```bash
+python3 dsv4_subagent_fix.py &
+```
+
 ## Problem
 
 Claude Code 2.1.166+ sends `thinking: { type: "disabled" }` for subagents (no need to show thinking chain to users). When combined with `CLAUDE_CODE_EFFORT_LEVEL=max` (recommended by DeepSeek), the API request includes `output_config` or `reasoning_effort`. DeepSeek's Anthropic-compatible endpoint rejects this combination:

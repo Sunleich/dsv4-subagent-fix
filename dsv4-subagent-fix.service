@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=%u
-ExecStart=/usr/bin/python3 /opt/dsv4-subagent-fix/dsv4_subagent_fix.py
+ExecStart=/usr/bin/node /opt/dsv4-subagent-fix/index.js
 Restart=on-failure
 RestartSec=5
 
