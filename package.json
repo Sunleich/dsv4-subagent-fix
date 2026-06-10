@@ -1,6 +1,6 @@
 {
   "name": "dsv4-subagent-fix",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Minimal zero-dependency proxy to fix DeepSeek V4 Claude Code subagent incompatibility",
   "keywords": [
     "deepseek",
@@ -19,7 +19,7 @@
     "url": "git+https://github.com/Sunleich/dsv4-subagent-fix.git"
   },
   "bin": {
-    "dsv4-subagent-fix": "./index.js"
+    "dsv4-subagent-fix": "index.js"
   },
   "engines": {
     "node": ">=18"
