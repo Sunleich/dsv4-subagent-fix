@@ -1,0 +1,13 @@
+[Unit]
+Description=DeepSeek Subagent Fix Proxy
+After=network.target
+
+[Service]
+Type=simple
+User=%u
+ExecStart=/usr/bin/python3 /opt/dsv4-subagent-fix/dsv4_subagent_fix.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
