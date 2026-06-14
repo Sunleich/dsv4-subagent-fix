@@ -14,11 +14,12 @@ reasoning_effort（DeepSeek 禁止与 disabled 共存，会返回 400）。
 
 import http.server
 import json
+import os
 import ssl
 import urllib.error
 import urllib.request
 
-UPSTREAM = "https://api.deepseek.com/anthropic"
+UPSTREAM = os.environ.get("DEEPSEEK_API_URL", "https://api.deepseek.com/anthropic")
 PORT = 16890
 BIND = "127.0.0.1"
 

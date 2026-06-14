@@ -1,6 +1,6 @@
 # dsv4-subagent-fix
 
-A minimal (~70 lines, zero dependencies) local proxy that fixes DeepSeek V4's subagent incompatibility with Claude Code ≥ 2.1.166.
+A minimal (zero dependencies) local proxy that fixes DeepSeek V4's subagent incompatibility with Claude Code ≥ 2.1.166, with runtime upstream switching support.
 
 ## Quick Start
 
@@ -16,7 +16,7 @@ Then add to Claude Code `settings.json`:
 
 Restart Claude Code. Subagents work.
 
-**Python version:**
+**Python version (no npm needed):**
 ```bash
 python3 dsv4_subagent_fix.py &
 ```
@@ -47,15 +47,28 @@ Claude Code (main agent)
   → api.deepseek.com/anthropic
 ```
 
-## Quick Start
+## Switching Upstream (Runtime)
+
+The proxy supports changing the upstream API URL at runtime without restarting.
 
 ```bash
-# Start the proxy
-python3 dsv4_subagent_fix.py &
+# Check current upstream
+curl http://localhost:16890/__status
 
-# Configure Claude Code
-# In settings.json:
-#   "ANTHROPIC_BASE_URL": "http://localhost:16890"
+# Switch to a different API
+curl -X POST http://localhost:16890/__switch \
+  -H 'Content-Type: application/json' \
+  -d '{"url":"https://your-api.com/v1"}'
+```
+
+**Priority at startup:** `-u <url>` CLI arg > `DEEPSEEK_API_URL` env var > default (`https://api.deepseek.com/anthropic`)
+
+```bash
+# Via env var
+DEEPSEEK_API_URL=https://your-api.com/v1 npx dsv4-subagent-fix
+
+# Via CLI arg
+npx dsv4-subagent-fix -u https://your-api.com/v1
 ```
 
 ## Auto-start with systemd
@@ -66,16 +79,24 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now dsv4-subagent-fix
 ```
 
+To set a custom upstream via systemd, add to the service file:
+
+```ini
+[Service]
+Environment="DEEPSEEK_API_URL=https://your-api.com/v1"
+```
+
 ## Why not dsv4-cc-proxy?
 
 [dsv4-cc-proxy](https://github.com/HosheaLi/dsv4-cc-proxy) is a more comprehensive proxy that fixes 3 API incompatibilities. However, its thinking normalization applies to ALL requests, which can affect main agent reasoning quality. This script takes a more conservative approach — only strip conflicting fields when `thinking.type=disabled`, leaving main agent requests completely untouched.
 
 | | dsv4-cc-proxy | dsv4-subagent-fix |
 |---|---|---|
-| Lines of code | ~430 | **~70** |
-| Dependencies | httpx, starlette, socksio... | **Python stdlib only** |
+| Lines of code | ~430 | **~130** |
+| Dependencies | httpx, starlette, socksio... | **Node.js / Python stdlib only** |
 | Main agent impact | Side effects | **None (passthrough)** |
 | What it fixes | 3 issues | **1 focused fix** |
+| Runtime switch | ❌ | **Built-in (HTTP endpoint)** |
 
 ## License
 
